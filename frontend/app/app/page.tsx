@@ -11,20 +11,18 @@ export default function DashboardPage(){
     <>
       <div className="pageTop">
         <div>
-          <div className="eyebrow">Dashboard</div>
-          <h1>Escrow overview</h1>
-          <p className="muted">Track jobs, escrow status, and recent activity for {address ? `${address.slice(0,6)}...${address.slice(-4)}` : 'your wallet'}.</p>
+          <h1>Dashboard</h1>
+          <p className="muted">{address ? `Connected: ${address.slice(0,6)}…${address.slice(-4)}` : ''}</p>
         </div>
         <Link className="btn btnPrimary" href="/app/create-job">Create Job</Link>
       </div>
 
       <DashboardStats />
 
-      <h2 className="sectionTitle">Quick actions</h2>
       <section className="jobsGrid">
-        <Link className="card jobCard" href="/app/jobs"><span className="statusPill">Marketplace</span><h3>Browse open jobs</h3><p className="muted">Find funded jobs waiting for an agent.</p></Link>
-        <Link className="card jobCard" href="/app/my-jobs"><span className="statusPill">Portfolio</span><h3>My jobs</h3><p className="muted">Review jobs you created or accepted.</p></Link>
-        <Link className="card jobCard" href="/app/history"><span className="statusPill">On-chain</span><h3>Transaction history</h3><p className="muted">See escrow lifecycle events and payment activity.</p></Link>
+        <Link className="card jobCard" href="/app/jobs"><h3>Open Jobs</h3><p className="muted">Browse funded jobs on BOT Chain.</p></Link>
+        <Link className="card jobCard" href="/app/my-jobs"><h3>My Jobs</h3><p className="muted">See jobs linked to your wallet.</p></Link>
+        <Link className="card jobCard" href="/app/history"><h3>History</h3><p className="muted">View AgentEscrow contract events.</p></Link>
       </section>
     </>
   );
