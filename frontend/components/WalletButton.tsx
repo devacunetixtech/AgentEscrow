@@ -2,6 +2,7 @@
 
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi';
 import { botchainTestnet } from '../lib/botchain';
+import { userErrorMessage } from '@/lib/userError';
 
 function short(address?: string) {
   if (!address) return '';
@@ -10,38 +11,45 @@ function short(address?: string) {
 
 export function WalletButton({ compact = false }: { compact?: boolean }) {
   const { address, isConnected, chainId } = useAccount();
-  const { connect, connectors, isPending } = useConnect();
+  const { connect, connectors, isPending, error: connectError } = useConnect();
   const { disconnect } = useDisconnect();
-  const { switchChain, isPending: switching } = useSwitchChain();
+  const { switchChain, isPending: switching, error: switchError } = useSwitchChain();
 
   if (!isConnected) {
+    const connector = connectors[0];
     return (
-      <button
-        className="btn btnPrimary"
-        onClick={() => connectors[0] && connect({ connector: connectors[0] })}
-        disabled={isPending || !connectors[0]}
-      >
-        {isPending ? 'Connecting…' : 'Connect Wallet'}
-      </button>
+      <div className="walletConnect">
+        <button
+          className="btn btnPrimary"
+          onClick={() => connector && connect({ connector })}
+          disabled={isPending || !connector}
+        >
+          {isPending ? 'Check your wallet…' : 'Connect Wallet'}
+        </button>
+        {!connector && <p className="error compactMessage">Open AgentEscrow in a wallet browser or install a compatible wallet.</p>}
+        {connectError && <p className="error compactMessage">{userErrorMessage(connectError, 'Wallet connection failed. Please try again.')}</p>}
+      </div>
     );
   }
 
   if (chainId !== botchainTestnet.id) {
     return (
-      <button
-        className="btn btnPrimary"
-        onClick={() => switchChain({ chainId: botchainTestnet.id })}
-        disabled={switching}
-      >
-        {switching ? 'Switching…' : 'Switch to BOT Testnet'}
-      </button>
+      <div className="walletConnect">
+        <button
+          className="btn btnPrimary"
+          onClick={() => switchChain({ chainId: botchainTestnet.id })}
+          disabled={switching}
+        >
+          {switching ? 'Check your wallet…' : 'Switch to BOT Chain Testnet'}
+        </button>
+        {switchError && <p className="error compactMessage">{userErrorMessage(switchError, 'Could not switch networks. Please select BOT Chain Testnet in your wallet.')}</p>}
+      </div>
     );
   }
 
   return (
     <div className="walletArea">
-      {!compact && <span className="address">{short(address)}</span>}
-      {compact && <span className="address">{short(address)}</span>}
+      <span className="address">{short(address)}</span>
       <button className="btn btnSecondary" onClick={() => disconnect()}>
         Disconnect
       </button>
