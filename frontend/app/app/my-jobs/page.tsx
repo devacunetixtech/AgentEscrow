@@ -7,13 +7,7 @@ export default function MyJobsPage(){
   const { address } = useAccount();
   return (
     <>
-      <div className="pageTop">
-        <div>
-          <div className="eyebrow">My jobs</div>
-          <h1>Your escrow activity</h1>
-          <p className="muted">Jobs you created as a client and jobs you accepted as an agent.</p>
-        </div>
-      </div>
+      <div className="pageTop"><div><h1>My Jobs</h1><p className="muted">Jobs created or accepted by this wallet.</p></div></div>
       <JobsList mode="mine" address={address} />
     </>
   );
