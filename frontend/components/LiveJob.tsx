@@ -13,12 +13,12 @@ export function LiveJob({id}:{id:bigint}) {
     abi:agentEscrowAbi,
     functionName:'getJob',
     args:[id],
-    query:{enabled:hasContractAddress}
+    query:{enabled:hasContractAddress,refetchInterval:5000}
   });
 
-  if (!hasContractAddress) return <div className="card empty">Contract address not configured.</div>;
-  if (isLoading) return <div className="card empty">Loading job…</div>;
-  if (error || !data) return <div className="card empty">Job not found.</div>;
+  if (!hasContractAddress) return <div className="card empty">AgentEscrow is temporarily unavailable.</div>;
+  if (isLoading) return <div className="card empty">Loading this job from BOT Chain…</div>;
+  if (error || !data) return <div className="card empty">This job could not be loaded. It may not exist yet.</div>;
 
   const job = data as EscrowJob;
   return <div className="detailGrid">
@@ -29,9 +29,9 @@ export function LiveJob({id}:{id:bigint}) {
       <div className="jobMeta"><span>Client</span><strong>{job.client}</strong></div>
       <div className="jobMeta"><span>Agent</span><strong>{job.agent===zeroAddress?'Not assigned':job.agent}</strong></div>
       <div className="jobMeta"><span>Deadline</span><strong>{new Date(Number(job.deadline)*1000).toLocaleString()}</strong></div>
-      <h3>Job metadata</h3><p className="muted">{job.metadataURI}</p>
-      {job.submissionURI && <><h3>Submission</h3><p className="muted">{job.submissionURI}</p></>}
-      <Link className="btn btnSecondary" href={`/app/jobs/${job.id.toString()}/status`}>View Escrow Status</Link>
+      <h3>Details</h3><p className="muted">{job.metadataURI}</p>
+      {job.submissionURI && <><h3>Delivery</h3><p className="muted">{job.submissionURI}</p></>}
+      <Link className="btn btnSecondary" href={`/app/jobs/${job.id.toString()}/status`}>Escrow Status</Link>
     </section>
     <aside className="card"><JobActions job={job} /></aside>
   </div>;
