@@ -2,8 +2,10 @@
   "chainId": 968,
   "network": "BOT Chain Testnet",
   "contract": "AgentEscrow",
-  "address": "0x065F0c2c935BD5CA0E177ec2Be7569750ac1971F",
-  "transactionHash": "0xa8939ce70cf47be237d0d7f9999ac3359d907fa55bbcd8960f089c4e0d9976c2",
-  "explorer": "https://scan.bohr.life/address/0x065F0c2c935BD5CA0E177ec2Be7569750ac1971F",
-  "verified": true
+  "address": "0xD35764FdC941abEBa8376a5c796554751C00a1bf",
+  "transactionHash": "0xae0e45dcd5c1782e7387b5a80750fa054557701d51ce8e49a5ebd27fe839dbd8",
+  "explorer": "https://scan.bohr.life/address/0xD35764FdC941abEBa8376a5c796554751C00a1bf",
+  "verified": true,
+  "e2eValidated": true,
+  "e2eJobId": 1
 }
