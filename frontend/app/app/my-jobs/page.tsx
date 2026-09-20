@@ -1,4 +1,10 @@
+'use client';
+
+import { useAccount } from 'wagmi';
+import { JobsList } from '@/components/JobsList';
+
 export default function MyJobsPage(){
+  const { address } = useAccount();
   return (
     <>
       <div className="pageTop">
@@ -8,21 +14,7 @@ export default function MyJobsPage(){
           <p className="muted">Jobs you created as a client and jobs you accepted as an agent.</p>
         </div>
       </div>
-
-      <section className="jobsGrid">
-        <div className="card">
-          <h3>Created by me</h3>
-          <p className="muted">Client-side jobs will appear here after the contract address is configured.</p>
-        </div>
-        <div className="card">
-          <h3>Accepted by me</h3>
-          <p className="muted">Agent-side jobs will appear here after the contract address is configured.</p>
-        </div>
-        <div className="card">
-          <h3>Completed</h3>
-          <p className="muted">Released and refunded jobs will be grouped here.</p>
-        </div>
-      </section>
+      <JobsList mode="mine" address={address} />
     </>
   );
 }
