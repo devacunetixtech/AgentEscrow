@@ -5,12 +5,12 @@ import { WalletButton } from './WalletButton';
 
 export function AppHeader() {
   return (
-    <header className="app-header">
+    <header className="appHeader">
       <Link className="brand" href="/">AgentEscrow</Link>
-      <nav className="app-nav">
+      <nav className="appNav">
         <Link href="/app">Dashboard</Link>
         <Link href="/app/jobs">Open Jobs</Link>
-        <Link href="/app/jobs/create">Create Job</Link>
+        <Link href="/app/create-job">Create Job</Link>
         <Link href="/app/my-jobs">My Jobs</Link>
         <Link href="/app/history">History</Link>
       </nav>
