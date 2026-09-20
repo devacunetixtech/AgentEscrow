@@ -3,7 +3,7 @@
 import { formatEther } from 'viem';
 import { useReadContract, useReadContracts } from 'wagmi';
 import { AGENT_ESCROW_ADDRESS, agentEscrowAbi, hasContractAddress } from '@/lib/contract';
-import type { EscrowJob } from '@/lib/jobs';
+import { EscrowJob, isAvailableOpenJob } from '@/lib/jobs';
 
 export function DashboardStats(){
   const {data:count,isLoading:loadingCount,error:countError}=useReadContract({
@@ -25,7 +25,7 @@ export function DashboardStats(){
 
   const jobs=(data||[]).filter((r:any)=>r.status==='success'&&r.result).map((r:any)=>r.result as EscrowJob);
   const escrow=jobs.filter(j=>[0,1,2].includes(Number(j.status))).reduce((sum,j)=>sum+j.reward,0n);
-  const open=jobs.filter(j=>Number(j.status)===0).length;
+  const open=jobs.filter(j=>isAvailableOpenJob(j)).length;
   const active=jobs.filter(j=>[1,2].includes(Number(j.status))).length;
   const completed=jobs.filter(j=>Number(j.status)===3).length;
 
