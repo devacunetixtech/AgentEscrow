@@ -263,3 +263,29 @@ p{line-height:1.65}
   .jobDetailTop{flex-direction:column}
   .historyHeader{align-items:flex-start;flex-direction:column}
 }
+
+.appHeaderMain{display:flex;align-items:center;justify-content:space-between;gap:18px;width:100%}
+.appHeaderActions{display:flex;align-items:center;gap:8px}
+.activeNavLink{color:var(--text)!important}
+.menuButton{display:none;width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.025);padding:0;align-items:center;justify-content:center;flex-direction:column;gap:4px;cursor:pointer}
+.menuButton span{display:block;width:17px;height:2px;border-radius:999px;background:var(--text);transition:.18s ease}
+.menuButtonOpen span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.menuButtonOpen span:nth-child(2){opacity:0}
+.menuButtonOpen span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.mobileMenu{display:none}
+.mobileMenuNav{display:grid;gap:8px}
+.mobileMenuLink{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 15px;border:1px solid var(--border-soft);border-radius:12px;background:rgba(255,255,255,.025);font-weight:800}
+.mobileMenuLink span:last-child{color:var(--muted)}
+.activeMobileLink{border-color:rgba(217,180,74,.38);background:rgba(217,180,74,.08);color:var(--primary)}
+@media(max-width:780px){
+  .appHeader{position:sticky;top:8px;margin:0 0 24px;padding:10px 11px;display:block}
+  .appHeaderMain{gap:10px}
+  .appHeader .brandLockup>span:last-child{display:none}
+  .appNavDesktop{display:none}
+  .menuButton{display:flex;flex:0 0 auto}
+  .appHeaderActions{margin-left:auto}
+  .appHeaderActions .walletNavBtn{min-height:36px;padding:7px 10px;font-size:12px}
+  .mobileMenu{display:grid;grid-template-rows:0fr;opacity:0;pointer-events:none;transition:grid-template-rows .2s ease,opacity .2s ease}
+  .mobileMenu>nav{overflow:hidden}
+  .mobileMenuOpen{grid-template-rows:1fr;opacity:1;pointer-events:auto;padding-top:10px}
+}
