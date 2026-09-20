@@ -14,3 +14,7 @@ export type EscrowJob = {
 export function sameAddress(a?: string, b?: string) {
   return !!a && !!b && a.toLowerCase() === b.toLowerCase();
 }
+
+export function isAvailableOpenJob(job: EscrowJob, nowSeconds = Math.floor(Date.now() / 1000)) {
+  return Number(job.status) === 0 && Number(job.deadline) > nowSeconds;
+}
