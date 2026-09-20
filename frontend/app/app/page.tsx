@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useAccount } from 'wagmi';
+import { DashboardStats } from '@/components/DashboardStats';
 
 export default function DashboardPage(){
   const { address } = useAccount();
@@ -17,30 +18,13 @@ export default function DashboardPage(){
         <Link className="btn btnPrimary" href="/app/create-job">Create Job</Link>
       </div>
 
-      <section className="statsGrid">
-        <div className="card"><div className="muted">BOT in Escrow</div><div className="statValue">—</div></div>
-        <div className="card"><div className="muted">Open Jobs</div><div className="statValue">—</div></div>
-        <div className="card"><div className="muted">Active Jobs</div><div className="statValue">—</div></div>
-        <div className="card"><div className="muted">Completed</div><div className="statValue">—</div></div>
-      </section>
+      <DashboardStats />
 
       <h2 className="sectionTitle">Quick actions</h2>
       <section className="jobsGrid">
-        <Link className="card jobCard" href="/app/jobs">
-          <span className="statusPill">Marketplace</span>
-          <h3>Browse open jobs</h3>
-          <p className="muted">Find funded jobs waiting for an agent.</p>
-        </Link>
-        <Link className="card jobCard" href="/app/my-jobs">
-          <span className="statusPill">Portfolio</span>
-          <h3>My jobs</h3>
-          <p className="muted">Review jobs you created or accepted.</p>
-        </Link>
-        <Link className="card jobCard" href="/app/history">
-          <span className="statusPill">On-chain</span>
-          <h3>Transaction history</h3>
-          <p className="muted">See escrow lifecycle events and payment activity.</p>
-        </Link>
+        <Link className="card jobCard" href="/app/jobs"><span className="statusPill">Marketplace</span><h3>Browse open jobs</h3><p className="muted">Find funded jobs waiting for an agent.</p></Link>
+        <Link className="card jobCard" href="/app/my-jobs"><span className="statusPill">Portfolio</span><h3>My jobs</h3><p className="muted">Review jobs you created or accepted.</p></Link>
+        <Link className="card jobCard" href="/app/history"><span className="statusPill">On-chain</span><h3>Transaction history</h3><p className="muted">See escrow lifecycle events and payment activity.</p></Link>
       </section>
     </>
   );
