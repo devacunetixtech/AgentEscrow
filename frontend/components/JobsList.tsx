@@ -7,26 +7,27 @@ import { AGENT_ESCROW_ADDRESS, agentEscrowAbi, hasContractAddress } from '@/lib/
 import { EscrowJob, STATUS_LABELS, sameAddress } from '@/lib/jobs';
 
 export function JobsList({ mode = 'open', address }:{mode?:'open'|'mine'|'all';address?:string}) {
-  const { data: count } = useReadContract({
+  const { data: count, isLoading: loadingCount, error: countError } = useReadContract({
     address: AGENT_ESCROW_ADDRESS,
     abi: agentEscrowAbi,
     functionName: 'jobCount',
-    query: { enabled: hasContractAddress }
+    query: { enabled: hasContractAddress, refetchInterval: 8000 }
   });
 
   const ids = Array.from({ length: Number(count || 0n) }, (_, i) => BigInt(i + 1));
-  const { data, isLoading } = useReadContracts({
+  const { data, isLoading, error } = useReadContracts({
     contracts: ids.map(id => ({
       address: AGENT_ESCROW_ADDRESS,
       abi: agentEscrowAbi,
       functionName: 'getJob' as const,
       args: [id] as const,
     })),
-    query: { enabled: hasContractAddress && ids.length > 0 }
+    query: { enabled: hasContractAddress && ids.length > 0, refetchInterval: 8000 }
   });
 
-  if (!hasContractAddress) return <div className="card empty">Contract address not configured yet.</div>;
-  if (isLoading) return <div className="card empty">Loading jobs…</div>;
+  if (!hasContractAddress) return <div className="card empty">AgentEscrow is temporarily unavailable.</div>;
+  if (loadingCount || isLoading) return <div className="card empty">Loading live jobs from BOT Chain…</div>;
+  if (countError || error) return <div className="card empty">Could not load jobs from BOT Chain. Please try again.</div>;
 
   const jobs = (data || [])
     .filter((r:any) => r.status === 'success' && r.result)
@@ -37,7 +38,7 @@ export function JobsList({ mode = 'open', address }:{mode?:'open'|'mine'|'all';a
       return true;
     });
 
-  if (!jobs.length) return <div className="card empty">No matching jobs found.</div>;
+  if (!jobs.length) return <div className="card empty">{mode === 'open' ? 'No open jobs right now.' : 'No jobs found for this wallet.'}</div>;
 
   return <div className="jobsGrid">
     {jobs.map(job => <Link href={`/app/jobs/${job.id.toString()}`} className="card jobCard" key={job.id.toString()}>
