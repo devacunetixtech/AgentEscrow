@@ -80,7 +80,14 @@ export const agentEscrowAbi = [
     inputs: [{ name: 'jobId', type: 'uint256' }],
     outputs: [],
   },
+,
+  {type:'event',name:'JobCreated',inputs:[{indexed:true,name:'jobId',type:'uint256'},{indexed:true,name:'client',type:'address'},{indexed:false,name:'reward',type:'uint256'},{indexed:false,name:'deadline',type:'uint256'},{indexed:false,name:'metadataURI',type:'string'}]},
+  {type:'event',name:'JobAccepted',inputs:[{indexed:true,name:'jobId',type:'uint256'},{indexed:true,name:'agent',type:'address'}]},
+  {type:'event',name:'WorkSubmitted',inputs:[{indexed:true,name:'jobId',type:'uint256'},{indexed:true,name:'agent',type:'address'},{indexed:false,name:'submissionURI',type:'string'}]},
+  {type:'event',name:'JobCompleted',inputs:[{indexed:true,name:'jobId',type:'uint256'},{indexed:true,name:'agent',type:'address'},{indexed:false,name:'reward',type:'uint256'}]},
+  {type:'event',name:'JobCancelled',inputs:[{indexed:true,name:'jobId',type:'uint256'},{indexed:true,name:'client',type:'address'},{indexed:false,name:'refund',type:'uint256'}]},
+  {type:'event',name:'JobExpired',inputs:[{indexed:true,name:'jobId',type:'uint256'},{indexed:true,name:'client',type:'address'},{indexed:false,name:'refund',type:'uint256'}]}
 ] as const;
 
 export const hasContractAddress =
-  /^0x[a-fA-F0-9]{40}$/.test(AGENT_ESCROW_ADDRESS);
+  /^0x[a-fA-F0-9]{40}$/.test(AGENT_ESCROW_ADDRESS) && AGENT_ESCROW_ADDRESS !== '0x0000000000000000000000000000000000000000';
