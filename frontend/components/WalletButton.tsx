@@ -17,7 +17,7 @@ export function WalletButton({ compact = false }: { compact?: boolean }) {
   if (!isConnected) {
     return (
       <button
-        className={compact ? 'btn btn-small' : 'btn'}
+        className="btn btnPrimary"
         onClick={() => connectors[0] && connect({ connector: connectors[0] })}
         disabled={isPending || !connectors[0]}
       >
@@ -29,7 +29,7 @@ export function WalletButton({ compact = false }: { compact?: boolean }) {
   if (chainId !== botchainTestnet.id) {
     return (
       <button
-        className={compact ? 'btn btn-small' : 'btn'}
+        className="btn btnPrimary"
         onClick={() => switchChain({ chainId: botchainTestnet.id })}
         disabled={switching}
       >
@@ -39,9 +39,10 @@ export function WalletButton({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <div className="wallet-actions">
-      <span className="wallet-pill">{short(address)}</span>
-      <button className="btn btn-outline btn-small" onClick={() => disconnect()}>
+    <div className="walletArea">
+      {!compact && <span className="address">{short(address)}</span>}
+      {compact && <span className="address">{short(address)}</span>}
+      <button className="btn btnSecondary" onClick={() => disconnect()}>
         Disconnect
       </button>
     </div>
