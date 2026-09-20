@@ -33,7 +33,7 @@ export function JobsList({ mode = 'open', address }:{mode?:'open'|'mine'|'all';a
     .filter((r:any) => r.status === 'success' && r.result)
     .map((r:any) => r.result as EscrowJob)
     .filter(job => {
-      if (mode === 'open') return Number(job.status) === 0;
+      if (mode === 'open') return Number(job.status) === 0 && Number(job.deadline) > Math.floor(Date.now()/1000);
       if (mode === 'mine') return sameAddress(job.client,address) || sameAddress(job.agent,address);
       return true;
     });
