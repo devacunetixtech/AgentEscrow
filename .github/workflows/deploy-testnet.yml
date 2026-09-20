@@ -38,6 +38,11 @@ jobs:
         run: |
           test -n "$PRIVATE_KEY" || (echo "Missing BOTCHAIN_PRIVATE_KEY repository secret" && exit 1)
           test -n "$BLOCKSCOUT_API_KEY" || (echo "Missing BLOCKSCOUT_API_KEY repository secret" && exit 1)
+          case "$PRIVATE_KEY" in
+            0x*) ;;
+            *) PRIVATE_KEY="0x$PRIVATE_KEY" ;;
+          esac
+          export PRIVATE_KEY
 
           forge script script/DeployBotchain.s.sol:DeployBotchain \
             --rpc-url "$BOTCHAIN_RPC_URL" \
