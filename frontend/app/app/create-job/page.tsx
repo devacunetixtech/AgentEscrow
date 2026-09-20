@@ -4,6 +4,7 @@ import { FormEvent, useState } from 'react';
 import { parseEther } from 'viem';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 import { AGENT_ESCROW_ADDRESS, agentEscrowAbi, hasContractAddress } from '@/lib/contract';
+import { userErrorMessage } from '@/lib/userError';
 
 export default function CreateJobPage(){
   const [details,setDetails] = useState('');
@@ -11,16 +12,24 @@ export default function CreateJobPage(){
   const [deadline,setDeadline] = useState('');
   const { writeContract, data: hash, isPending, error } = useWriteContract();
   const { isLoading: confirming, isSuccess } = useWaitForTransactionReceipt({ hash });
+  const [formError,setFormError] = useState('');
+  const busy = isPending || confirming;
 
   function onSubmit(e:FormEvent<HTMLFormElement>){
     e.preventDefault();
-    if (!hasContractAddress) return;
-    const deadlineSeconds = BigInt(Math.floor(new Date(deadline).getTime()/1000));
+    setFormError('');
+
+    const when = new Date(deadline).getTime();
+    if (!details.trim()) return setFormError('Add the job details before continuing.');
+    if (!reward || Number(reward) <= 0) return setFormError('Enter a BOT reward greater than 0.');
+    if (!when || when <= Date.now()) return setFormError('Choose a deadline in the future.');
+    if (!hasContractAddress) return setFormError('AgentEscrow is temporarily unavailable. Please try again shortly.');
+
     writeContract({
       address: AGENT_ESCROW_ADDRESS,
       abi: agentEscrowAbi,
       functionName: 'createJob',
-      args: [details.trim(), deadlineSeconds],
+      args: [details.trim(), BigInt(Math.floor(when/1000))],
       value: parseEther(reward),
     });
   }
@@ -29,16 +38,15 @@ export default function CreateJobPage(){
     <>
       <div className="pageTop">
         <div>
-          <div className="eyebrow">Create job</div>
-          <h1>Fund a new escrow</h1>
-          <p className="muted">Set the task, reward, and deadline. BOT is deposited into the contract when the transaction is submitted.</p>
+          <h1>Create Job</h1>
+          <p className="muted">Fund the escrow with BOT and publish the job on-chain.</p>
         </div>
       </div>
 
       <form className="form card" onSubmit={onSubmit}>
         <div className="field">
-          <label htmlFor="details">Job details / metadata URI</label>
-          <textarea id="details" className="textarea" value={details} onChange={e=>setDetails(e.target.value)} placeholder="ipfs://... or describe the work" required />
+          <label htmlFor="details">Job details</label>
+          <textarea id="details" className="textarea" value={details} onChange={e=>setDetails(e.target.value)} placeholder="Describe the work or add a metadata link" required />
         </div>
         <div className="field">
           <label htmlFor="reward">Reward (BOT)</label>
@@ -48,13 +56,13 @@ export default function CreateJobPage(){
           <label htmlFor="deadline">Deadline</label>
           <input id="deadline" className="input" value={deadline} onChange={e=>setDeadline(e.target.value)} type="datetime-local" required />
         </div>
-        <button className="btn btnPrimary" type="submit" disabled={!hasContractAddress || isPending || confirming}>
-          {isPending || confirming ? 'Creating…' : 'Create & Deposit BOT'}
+        <button className="btn btnPrimary" type="submit" disabled={!hasContractAddress || busy}>
+          {busy ? 'Check your wallet…' : 'Create Job'}
         </button>
-        {!hasContractAddress && <p className="error">Contract not deployed/configured yet.</p>}
-        {hash && <p className="muted">Transaction: {hash}</p>}
-        {isSuccess && <p className="success">Job created successfully.</p>}
-        {error && <p className="error">{error.message}</p>}
+        {formError && <p className="error">{formError}</p>}
+        {hash && <p className="muted compactMessage">Transaction submitted. Waiting for BOT Chain confirmation.</p>}
+        {isSuccess && <p className="success">Job created on BOT Chain.</p>}
+        {error && <p className="error">{userErrorMessage(error, 'The job could not be created. Please check your wallet balance and try again.')}</p>}
       </form>
     </>
   );
