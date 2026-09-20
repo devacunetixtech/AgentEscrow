@@ -8,12 +8,12 @@ export function LandingActions() {
   const { isConnected } = useAccount();
 
   return (
-    <div className="actions">
-      <WalletButton />
+    <div className="landingNavActions">
+      <WalletButton compact />
       {isConnected ? (
-        <Link className="btn btnSecondary" href="/app">Open App</Link>
+        <Link className="btn btnPrimary navOpenBtn" href="/app">Open App</Link>
       ) : (
-        <button className="btn btnSecondary" disabled title="Connect your wallet first">Open App</button>
+        <button className="btn btnSecondary navOpenBtn" disabled title="Connect your wallet first">Open App</button>
       )}
     </div>
   );
