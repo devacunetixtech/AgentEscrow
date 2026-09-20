@@ -12,12 +12,11 @@ export function AppGate({ children }: { children: React.ReactNode }) {
       <main className="appShell">
         <section className="gate">
           <div className="card">
-            <div className="eyebrow">Wallet required</div>
-            <h1>Connect before opening AgentEscrow</h1>
-            <p className="muted">The app is wallet-gated. Connecting does not redirect you automatically; from the landing page, use Open App when you are ready.</p>
+            <h1>Connect your wallet</h1>
+            <p className="muted">AgentEscrow uses your wallet to sign real BOT Chain transactions.</p>
             <div className="actions">
               <WalletButton />
-              <Link className="btn btnSecondary" href="/">Back to home</Link>
+              <Link className="btn btnSecondary" href="/">Back Home</Link>
             </div>
           </div>
         </section>
