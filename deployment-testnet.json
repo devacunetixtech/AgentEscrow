@@ -1,0 +1,9 @@
+{
+  "chainId": 968,
+  "network": "BOT Chain Testnet",
+  "contract": "AgentEscrow",
+  "address": "0x065F0c2c935BD5CA0E177ec2Be7569750ac1971F",
+  "transactionHash": "0xa8939ce70cf47be237d0d7f9999ac3359d907fa55bbcd8960f089c4e0d9976c2",
+  "explorer": "https://scan.bohr.life/address/0x065F0c2c935BD5CA0E177ec2Be7569750ac1971F",
+  "verified": true
+}
