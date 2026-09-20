@@ -1,0 +1,1 @@
+export default async function Job({params}:{params:Promise<{id:string}>}){const {id}=await params;return <><h1>Job #{id}</h1><div className="card"><p className="status">Escrow Status</p><p>Funded → Accepted → Submitted → Released</p><p className="muted">Wallet-connected contract actions are wired after deployment by adding the contract address.</p></div></>}
