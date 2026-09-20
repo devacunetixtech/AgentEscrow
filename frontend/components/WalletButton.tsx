@@ -18,13 +18,13 @@ export function WalletButton({ compact = false }: { compact?: boolean }) {
   if (!isConnected) {
     const connector = connectors[0];
     return (
-      <div className="walletConnect">
+      <div className={compact ? 'walletConnect walletConnectCompact' : 'walletConnect'}>
         <button
-          className="btn btnPrimary"
+          className={compact ? 'btn btnPrimary walletNavBtn' : 'btn btnPrimary'}
           onClick={() => connector && connect({ connector })}
           disabled={isPending || !connector}
         >
-          {isPending ? 'Check your wallet…' : 'Connect Wallet'}
+          {isPending ? 'Connecting…' : 'Connect Wallet'}
         </button>
         {!connector && <p className="error compactMessage">Open AgentEscrow in a wallet browser or install a compatible wallet.</p>}
         {connectError && <p className="error compactMessage">{userErrorMessage(connectError, 'Wallet connection failed. Please try again.')}</p>}
@@ -34,13 +34,13 @@ export function WalletButton({ compact = false }: { compact?: boolean }) {
 
   if (chainId !== botchainTestnet.id) {
     return (
-      <div className="walletConnect">
+      <div className={compact ? 'walletConnect walletConnectCompact' : 'walletConnect'}>
         <button
-          className="btn btnPrimary"
+          className={compact ? 'btn btnPrimary walletNavBtn' : 'btn btnPrimary'}
           onClick={() => switchChain({ chainId: botchainTestnet.id })}
           disabled={switching}
         >
-          {switching ? 'Check your wallet…' : 'Switch to BOT Chain Testnet'}
+          {switching ? 'Switching…' : compact ? 'Switch Network' : 'Switch to BOT Chain Testnet'}
         </button>
         {switchError && <p className="error compactMessage">{userErrorMessage(switchError, 'Could not switch networks. Please select BOT Chain Testnet in your wallet.')}</p>}
       </div>
@@ -48,9 +48,12 @@ export function WalletButton({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <div className="walletArea">
-      <span className="address">{short(address)}</span>
-      <button className="btn btnSecondary" onClick={() => disconnect()}>
+    <div className={compact ? 'walletArea walletAreaCompact' : 'walletArea'}>
+      {!compact && <span className="address">{short(address)}</span>}
+      <button
+        className={compact ? 'btn btnSecondary walletNavBtn' : 'btn btnSecondary'}
+        onClick={() => disconnect()}
+      >
         Disconnect
       </button>
     </div>
