@@ -1,0 +1,32 @@
+name: Deploy AgentEscrow to BOT Chain Testnet
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Install forge-std
+        run: forge install foundry-rs/forge-std --no-commit
+
+      - name: Deploy and verify
+        env:
+          PRIVATE_KEY: ${{ secrets.BOTCHAIN_PRIVATE_KEY }}
+          BOTCHAIN_RPC_URL: https://rpc.bohr.life
+          BOTCHAIN_VERIFIER_URL: https://scan.bohr.life/api/
+        run: |
+          test -n "$PRIVATE_KEY" || (echo "Missing BOTCHAIN_PRIVATE_KEY repository secret" && exit 1)
+          forge script script/DeployBotchain.s.sol:DeployBotchain \
+            --rpc-url "$BOTCHAIN_RPC_URL" \
+            --broadcast \
+            --verify \
+            --verifier blockscout \
+            --verifier-url "$BOTCHAIN_VERIFIER_URL" \
+            --slow
