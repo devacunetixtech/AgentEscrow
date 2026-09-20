@@ -9,17 +9,19 @@ export function AppGate({ children }: { children: React.ReactNode }) {
 
   if (!isConnected) {
     return (
-      <section className="gate card">
-        <div className="eyebrow">Wallet required</div>
-        <h1>Connect before opening AgentEscrow</h1>
-        <p className="muted">
-          The application is wallet-gated. Connect an EVM wallet, then return to the landing page and use the Open App button.
-        </p>
-        <div className="hero-actions">
-          <WalletButton />
-          <Link className="btn btn-outline" href="/">Back to home</Link>
-        </div>
-      </section>
+      <main className="appShell">
+        <section className="gate">
+          <div className="card">
+            <div className="eyebrow">Wallet required</div>
+            <h1>Connect before opening AgentEscrow</h1>
+            <p className="muted">The app is wallet-gated. Connecting does not redirect you automatically; from the landing page, use Open App when you are ready.</p>
+            <div className="actions">
+              <WalletButton />
+              <Link className="btn btnSecondary" href="/">Back to home</Link>
+            </div>
+          </div>
+        </section>
+      </main>
     );
   }
 
