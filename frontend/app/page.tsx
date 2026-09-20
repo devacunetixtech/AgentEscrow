@@ -3,7 +3,7 @@ import { SiteFooter } from '@/components/SiteFooter';
 
 export default function Home() {
   return (
-    <main className="landing">
+    <main className="landing" id="top">
       <header className="landingNav">
         <a className="brand brandLockup" href="/">
           <span className="brandMark">AE</span>
