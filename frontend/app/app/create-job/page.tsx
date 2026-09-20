@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { decodeEventLog, formatEther, parseEther } from 'viem';
-import { usePublicClient, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
+import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 import { AGENT_ESCROW_ADDRESS, agentEscrowAbi, hasContractAddress } from '@/lib/contract';
 import { userErrorMessage } from '@/lib/userError';
 
@@ -16,7 +16,6 @@ type CreatedJob = {
 };
 
 export default function CreateJobPage(){
-  const client = usePublicClient();
   const [details,setDetails] = useState('');
   const [reward,setReward] = useState('');
   const [deadline,setDeadline] = useState('');
