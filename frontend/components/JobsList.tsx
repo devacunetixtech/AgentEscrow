@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { formatEther } from 'viem';
 import { useReadContract, useReadContracts } from 'wagmi';
 import { AGENT_ESCROW_ADDRESS, agentEscrowAbi, hasContractAddress } from '@/lib/contract';
-import { EscrowJob, STATUS_LABELS, sameAddress } from '@/lib/jobs';
+import { EscrowJob, STATUS_LABELS, sameAddress, isAvailableOpenJob } from '@/lib/jobs';
 
 export function JobsList({ mode = 'open', address }:{mode?:'open'|'mine'|'all';address?:string}) {
   const { data: count, isLoading: loadingCount, error: countError } = useReadContract({
@@ -33,7 +33,7 @@ export function JobsList({ mode = 'open', address }:{mode?:'open'|'mine'|'all';a
     .filter((r:any) => r.status === 'success' && r.result)
     .map((r:any) => r.result as EscrowJob)
     .filter(job => {
-      if (mode === 'open') return Number(job.status) === 0 && Number(job.deadline) > Math.floor(Date.now()/1000);
+      if (mode === 'open') return isAvailableOpenJob(job);
       if (mode === 'mine') return sameAddress(job.client,address) || sameAddress(job.agent,address);
       return true;
     });
