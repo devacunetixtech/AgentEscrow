@@ -5,16 +5,17 @@ import { AGENT_ESCROW_ADDRESS, agentEscrowAbi, hasContractAddress } from '@/lib/
 import type { EscrowJob } from '@/lib/jobs';
 
 export function EscrowTimeline({id}:{id:bigint}){
-  const {data,isLoading}=useReadContract({
+  const {data,isLoading,error}=useReadContract({
     address:AGENT_ESCROW_ADDRESS,
     abi:agentEscrowAbi,
     functionName:'getJob',
     args:[id],
-    query:{enabled:hasContractAddress}
+    query:{enabled:hasContractAddress,refetchInterval:5000}
   });
 
-  if(isLoading)return <div className="card empty">Loading escrow state…</div>;
-  if(!data)return <div className="card empty">Job not found.</div>;
+  if(isLoading)return <div className="card empty">Loading escrow status…</div>;
+  if(error||!data)return <div className="card empty">Could not load this escrow from BOT Chain.</div>;
+
   const job=data as EscrowJob;
   const status=Number(job.status);
   const terminal=status===4?'Cancelled':status===5?'Expired / Refunded':null;
@@ -24,8 +25,8 @@ export function EscrowTimeline({id}:{id:bigint}){
   return <section className="card timeline">
     {steps.map((step,index)=><div className="timelineItem" key={step}>
       <span className="dot" style={{opacity:index<=completedIndex?1:.25}} />
-      <div><strong>{step}</strong><div className="muted">{index<=completedIndex?'Completed':'Pending'}</div></div>
+      <div><strong>{step}</strong><div className="muted">{index<=completedIndex?'Done':'Pending'}</div></div>
     </div>)}
-    {terminal&&<div className="timelineItem"><span className="dot" /><div><strong>{terminal}</strong><div className="muted">Escrow is closed.</div></div></div>}
+    {terminal&&<div className="timelineItem"><span className="dot" /><div><strong>{terminal}</strong><div className="muted">Escrow closed</div></div></div>}
   </section>;
 }
