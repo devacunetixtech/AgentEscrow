@@ -1,3 +1,5 @@
+import { HistoryTable } from '@/components/HistoryTable';
+
 export default function HistoryPage(){
   return (
     <>
@@ -5,16 +7,10 @@ export default function HistoryPage(){
         <div>
           <div className="eyebrow">Transaction history</div>
           <h1>Escrow events</h1>
-          <p className="muted">A readable timeline of contract events for your connected wallet.</p>
+          <p className="muted">A readable timeline of AgentEscrow contract events on BOT Chain testnet.</p>
         </div>
       </div>
-
-      <div className="card tableWrap">
-        <table className="table">
-          <thead><tr><th>Event</th><th>Job</th><th>Amount</th><th>Status</th><th>Transaction</th></tr></thead>
-          <tbody><tr><td colSpan={5} className="muted">No contract events loaded yet.</td></tr></tbody>
-        </table>
-      </div>
+      <HistoryTable />
     </>
   );
 }
