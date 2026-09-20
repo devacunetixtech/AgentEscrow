@@ -2,7 +2,20 @@
 pragma solidity ^0.8.24;
 
 import "forge-std/Script.sol";
+import "forge-std/console2.sol";
 import "../src/AgentEscrow.sol";
+
+contract E2EAgent {
+    receive() external payable {}
+
+    function accept(AgentEscrow escrow, uint256 jobId) external {
+        escrow.acceptJob(jobId);
+    }
+
+    function submit(AgentEscrow escrow, uint256 jobId, string calldata submissionURI) external {
+        escrow.submitWork(jobId, submissionURI);
+    }
+}
 
 contract E2ETestnet is Script {
     function run() external {
@@ -10,32 +23,28 @@ contract E2ETestnet is Script {
         address escrowAddress = vm.envAddress("AGENT_ESCROW_ADDRESS");
         AgentEscrow escrow = AgentEscrow(escrowAddress);
 
-        uint256 agentKey = uint256(keccak256(abi.encodePacked(clientKey, "AgentEscrow-e2e-agent")));
-        address payable agent = payable(vm.addr(agentKey));
-
         vm.startBroadcast(clientKey);
-        agent.transfer(0.01 ether);
+
+        E2EAgent agent = new E2EAgent();
+
         uint256 jobId = escrow.createJob{value: 0.001 ether}(
             "e2e://agent-escrow-testnet-job",
             block.timestamp + 1 days
         );
-        vm.stopBroadcast();
 
-        vm.startBroadcast(agentKey);
-        escrow.acceptJob(jobId);
-        escrow.submitWork(jobId, "e2e://completed");
-        vm.stopBroadcast();
-
-        vm.startBroadcast(clientKey);
+        agent.accept(escrow, jobId);
+        agent.submit(escrow, jobId, "e2e://completed");
         escrow.approveJob(jobId);
+
         vm.stopBroadcast();
 
         AgentEscrow.Job memory job = escrow.getJob(jobId);
         require(job.status == AgentEscrow.Status.Completed, "E2E_NOT_COMPLETED");
         require(job.reward == 0, "E2E_REWARD_NOT_RELEASED");
+        require(job.agent == address(agent), "E2E_AGENT_MISMATCH");
 
         console2.log("E2E_JOB_ID", jobId);
-        console2.log("E2E_AGENT", agent);
+        console2.log("E2E_AGENT", address(agent));
         console2.log("E2E_STATUS_COMPLETED", true);
     }
 }
