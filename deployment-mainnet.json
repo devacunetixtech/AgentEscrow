@@ -1,0 +1,9 @@
+{
+  "chainId": 677,
+  "network": "BOT Chain Mainnet",
+  "contract": "AgentEscrow",
+  "address": "0xb48E161Fd1BC78b537C174F1D9B1b4cc87c271C9",
+  "transactionHash": "0x141843c87983b192ba9802e2c11dbce8a00e366ab19dec31f9705ecc0ed3c80a",
+  "explorer": "https://scan.botchain.ai/address/0xb48E161Fd1BC78b537C174F1D9B1b4cc87c271C9",
+  "verified": true
+}
