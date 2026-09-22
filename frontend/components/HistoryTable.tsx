@@ -132,7 +132,7 @@ export function HistoryTable(){
               <td>{LABELS[r.name]||r.name}</td>
               <td>#{r.args.jobId?.toString?.()||'—'}</td>
               <td>{r.args.reward?formatEther(r.args.reward):r.args.refund?formatEther(r.args.refund):'—'}</td>
-              <td><a className="inlineLink" href={`https://scan.bohr.life/tx/${r.hash}`} target="_blank" rel="noreferrer">{String(r.hash).slice(0,10)}…</a></td>
+              <td><a className="inlineLink" href={`https://scan.botchain.ai/tx/${r.hash}`} target="_blank" rel="noreferrer">{String(r.hash).slice(0,10)}…</a></td>
             </tr>)}
       </tbody>
     </table>
