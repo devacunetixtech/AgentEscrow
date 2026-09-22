@@ -145,7 +145,7 @@ export default function CreateJobPage(){
               <div><span>Reward</span><strong>{formatEther(createdJob.reward)} BOT</strong></div>
               <div><span>Deadline</span><strong>{new Date(Number(createdJob.deadline) * 1000).toLocaleString()}</strong></div>
               <div className="modalDetailWide"><span>Job details</span><strong>{createdJob.details}</strong></div>
-              <div className="modalDetailWide"><span>Transaction</span><a href={`https://scan.bohr.life/tx/${createdJob.txHash}`} target="_blank" rel="noreferrer">View on explorer ↗</a></div>
+              <div className="modalDetailWide"><span>Transaction</span><a href={`https://scan.botchain.ai/tx/${createdJob.txHash}`} target="_blank" rel="noreferrer">View on explorer ↗</a></div>
             </div>
 
             <div className="modalActions">
