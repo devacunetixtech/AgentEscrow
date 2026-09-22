@@ -9,7 +9,6 @@ on:
 
 jobs:
   deploy:
-    if: "!contains(github.event.head_commit.message, '[five-wallets]')"
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -98,40 +97,3 @@ jobs:
           echo "- Explorer: https://scan.botchain.ai/address/$ADDRESS" >> "$GITHUB_STEP_SUMMARY"
           echo "- Chain ID: 677" >> "$GITHUB_STEP_SUMMARY"
           echo "- Blockscout verification requested" >> "$GITHUB_STEP_SUMMARY"
-
-
-  five-wallet-interactions:
-    if: "contains(github.event.head_commit.message, '[five-wallets]')"
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: contracts
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: foundry-rs/foundry-toolchain@v1
-
-      - name: Install forge-std
-        run: forge install foundry-rs/forge-std --no-commit
-
-      - name: Run five real mainnet wallet interactions
-        env:
-          PRIVATE_KEY: ${{ secrets.BOTCHAIN_PRIVATE_KEY }}
-          AGENT_ESCROW_ADDRESS: 0xb48E161Fd1BC78b537C174F1D9B1b4cc87c271C9
-          BOTCHAIN_RPC_URL: https://rpc.botchain.ai
-        run: |
-          test -n "$PRIVATE_KEY" || (echo "Missing BOTCHAIN_PRIVATE_KEY" && exit 1)
-          case "$PRIVATE_KEY" in
-            0x*) ;;
-            *) PRIVATE_KEY="0x$PRIVATE_KEY" ;;
-          esac
-          export PRIVATE_KEY
-
-          CHAIN_ID=$(cast chain-id --rpc-url "$BOTCHAIN_RPC_URL")
-          test "$CHAIN_ID" = "677" || (echo "Expected BOT Chain mainnet chain ID 677" && exit 1)
-
-          forge script script/FiveWalletInteractions.s.sol:FiveWalletInteractions \
-            --rpc-url "$BOTCHAIN_RPC_URL" \
-            --broadcast \
-            --slow
