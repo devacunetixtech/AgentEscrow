@@ -1,0 +1,99 @@
+name: Deploy AgentEscrow to BOT Chain Mainnet
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/deploy-mainnet.trigger"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Install forge-std
+        run: forge install foundry-rs/forge-std --no-commit
+
+      - name: Test contract
+        run: forge test -vv
+
+      - name: Mainnet preflight
+        env:
+          PRIVATE_KEY: ${{ secrets.BOTCHAIN_PRIVATE_KEY }}
+          BOTCHAIN_RPC_URL: https://rpc.botchain.ai
+        run: |
+          test -n "$PRIVATE_KEY" || (echo "Missing BOTCHAIN_PRIVATE_KEY repository secret" && exit 1)
+
+          case "$PRIVATE_KEY" in
+            0x*) ;;
+            *) PRIVATE_KEY="0x$PRIVATE_KEY" ;;
+          esac
+          export PRIVATE_KEY
+
+          CHAIN_ID=$(cast chain-id --rpc-url "$BOTCHAIN_RPC_URL")
+          test "$CHAIN_ID" = "677" || (echo "Expected BOT Chain Mainnet chain ID 677, got $CHAIN_ID" && exit 1)
+
+          DEPLOYER=$(cast wallet address --private-key "$PRIVATE_KEY")
+          BALANCE=$(cast balance "$DEPLOYER" --rpc-url "$BOTCHAIN_RPC_URL")
+          echo "Deployer: $DEPLOYER"
+          echo "Mainnet BOT balance (wei): $BALANCE"
+          test "$BALANCE" -gt 0 || (echo "Deployer has no BOT on mainnet" && exit 1)
+
+      - name: Deploy and verify on Blockscout
+        env:
+          PRIVATE_KEY: ${{ secrets.BOTCHAIN_PRIVATE_KEY }}
+          BLOCKSCOUT_API_KEY: ${{ secrets.BLOCKSCOUT_API_KEY }}
+          BOTCHAIN_RPC_URL: https://rpc.botchain.ai
+          BOTCHAIN_VERIFIER_URL: https://scan.botchain.ai/api/
+        run: |
+          test -n "$BLOCKSCOUT_API_KEY" || (echo "Missing BLOCKSCOUT_API_KEY repository secret" && exit 1)
+
+          case "$PRIVATE_KEY" in
+            0x*) ;;
+            *) PRIVATE_KEY="0x$PRIVATE_KEY" ;;
+          esac
+          export PRIVATE_KEY
+
+          forge script script/DeployBotchain.s.sol:DeployBotchain \
+            --rpc-url "$BOTCHAIN_RPC_URL" \
+            --broadcast \
+            --verify \
+            --verifier blockscout \
+            --verifier-url "$BOTCHAIN_VERIFIER_URL" \
+            --etherscan-api-key "$BLOCKSCOUT_API_KEY" \
+            --slow
+
+      - name: Capture deployment
+        id: deployment
+        run: |
+          FILE="broadcast/DeployBotchain.s.sol/677/run-latest.json"
+          test -f "$FILE" || (echo "Mainnet broadcast file not found" && exit 1)
+
+          ADDRESS=$(jq -r '.transactions[] | select(.contractName == "AgentEscrow" and .transactionType == "CREATE") | .contractAddress' "$FILE" | head -n1)
+          TX_HASH=$(jq -r '.transactions[] | select(.contractName == "AgentEscrow" and .transactionType == "CREATE") | .hash' "$FILE" | head -n1)
+
+          test -n "$ADDRESS" && test "$ADDRESS" != "null" || (echo "Contract address not found" && exit 1)
+          test -n "$TX_HASH" && test "$TX_HASH" != "null" || (echo "Deployment transaction hash not found" && exit 1)
+
+          echo "address=$ADDRESS" >> "$GITHUB_OUTPUT"
+          echo "tx_hash=$TX_HASH" >> "$GITHUB_OUTPUT"
+
+      - name: Deployment summary
+        env:
+          ADDRESS: ${{ steps.deployment.outputs.address }}
+          TX_HASH: ${{ steps.deployment.outputs.tx_hash }}
+        run: |
+          echo "### BOT Chain Mainnet Deployment" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Contract: $ADDRESS" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Transaction: $TX_HASH" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Explorer: https://scan.botchain.ai/address/$ADDRESS" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Chain ID: 677" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Blockscout verification requested" >> "$GITHUB_STEP_SUMMARY"
