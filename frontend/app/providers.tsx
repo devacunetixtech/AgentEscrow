@@ -3,14 +3,14 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider, createConfig, http } from 'wagmi';
 import { injected } from 'wagmi/connectors';
-import { botchainTestnet } from '../lib/botchain';
+import { botchainMainnet } from '../lib/botchain';
 import { useState } from 'react';
 
 const config = createConfig({
-  chains: [botchainTestnet],
+  chains: [botchainMainnet],
   connectors: [injected()],
   transports: {
-    [botchainTestnet.id]: http(botchainTestnet.rpcUrls.default.http[0]),
+    [botchainMainnet.id]: http(botchainMainnet.rpcUrls.default.http[0]),
   },
   ssr: true,
 });
