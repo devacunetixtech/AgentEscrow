@@ -3,7 +3,7 @@ export function userErrorMessage(error: unknown, fallback = 'Something went wron
 
   if (/user rejected|user denied|rejected the request/i.test(message)) return 'You cancelled the request in your wallet.';
   if (/insufficient funds/i.test(message)) return 'Your wallet does not have enough BOT to complete this transaction and pay network fees.';
-  if (/chain.*not configured|unsupported chain|switch chain/i.test(message)) return 'Please switch your wallet to BOT Chain Testnet and try again.';
+  if (/chain.*not configured|unsupported chain|switch chain/i.test(message)) return 'Please switch your wallet to BOT Chain and try again.';
   if (/connector not found|provider not found|no provider/i.test(message)) return 'No compatible wallet was found. Open this DApp in a wallet browser or install a supported wallet.';
   if (/timeout|timed out|network|failed to fetch|rpc/i.test(message)) return 'BOT Chain is not responding right now. Check your connection and try again.';
   if (/deadline/i.test(message)) return 'Choose a deadline that is still in the future.';
