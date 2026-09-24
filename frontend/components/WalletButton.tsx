@@ -10,7 +10,13 @@ function short(address?: string) {
 }
 
 export function WalletButton({ compact = false }: { compact?: boolean }) {
-  const { address, isConnected, chainId } = useAccount();
+  const {
+    address,
+    isConnected,
+    chainId,
+    connector: activeConnector,
+  } = useAccount();
+
   const {
     connect,
     connectors,
@@ -18,8 +24,17 @@ export function WalletButton({ compact = false }: { compact?: boolean }) {
     error: connectError,
     reset: resetConnect,
   } = useConnect();
-  const { disconnect } = useDisconnect();
-  const { switchChain, isPending: switching, error: switchError } = useSwitchChain();
+
+  const {
+    disconnect,
+    isPending: disconnecting,
+  } = useDisconnect();
+
+  const {
+    switchChain,
+    isPending: switching,
+    error: switchError,
+  } = useSwitchChain();
 
   const connector =
     connectors.find((item) => item.id === 'injected') ??
@@ -28,11 +43,27 @@ export function WalletButton({ compact = false }: { compact?: boolean }) {
 
   function handleConnect() {
     if (!connector) return;
+
     resetConnect();
-    connect({
-      connector,
-      chainId: botchainTestnet.id,
-    });
+
+    // Connect first. Network switching is handled separately after the
+    // wallet is connected. This avoids stale injected-provider failures
+    // after a shim disconnect.
+    connect({ connector });
+  }
+
+  function handleDisconnect() {
+    resetConnect();
+
+    if (activeConnector) {
+      disconnect(
+        { connector: activeConnector },
+        { onSuccess: () => resetConnect() }
+      );
+      return;
+    }
+
+    disconnect(undefined, { onSuccess: () => resetConnect() });
   }
 
   if (!isConnected) {
@@ -45,11 +76,13 @@ export function WalletButton({ compact = false }: { compact?: boolean }) {
         >
           {isPending ? 'Connecting…' : 'Connect Wallet'}
         </button>
+
         {!connector && (
           <p className="error compactMessage">
             Open AgentEscrow in a wallet browser or install a compatible wallet.
           </p>
         )}
+
         {connectError && (
           <p className="error compactMessage">
             {userErrorMessage(connectError, 'Wallet connection failed. Please try again.')}
@@ -69,6 +102,7 @@ export function WalletButton({ compact = false }: { compact?: boolean }) {
         >
           {switching ? 'Switching…' : compact ? 'Switch Network' : 'Switch to BOT Chain Testnet'}
         </button>
+
         {switchError && (
           <p className="error compactMessage">
             {userErrorMessage(
@@ -84,14 +118,13 @@ export function WalletButton({ compact = false }: { compact?: boolean }) {
   return (
     <div className={compact ? 'walletArea walletAreaCompact' : 'walletArea'}>
       {!compact && <span className="address">{short(address)}</span>}
+
       <button
         className={compact ? 'btn btnSecondary walletNavBtn' : 'btn btnSecondary'}
-        onClick={() => {
-          resetConnect();
-          disconnect();
-        }}
+        onClick={handleDisconnect}
+        disabled={disconnecting}
       >
-        Disconnect
+        {disconnecting ? 'Disconnecting…' : 'Disconnect'}
       </button>
     </div>
   );
