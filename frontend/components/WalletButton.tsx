@@ -1,7 +1,7 @@
 'use client';
 
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi';
-import { botchainMainnet } from '../lib/botchain';
+import { botchainTestnet } from '../lib/botchain';
 import { userErrorMessage } from '@/lib/userError';
 
 function short(address?: string) {
@@ -32,17 +32,17 @@ export function WalletButton({ compact = false }: { compact?: boolean }) {
     );
   }
 
-  if (chainId !== botchainMainnet.id) {
+  if (chainId !== botchainTestnet.id) {
     return (
       <div className={compact ? 'walletConnect walletConnectCompact' : 'walletConnect'}>
         <button
           className={compact ? 'btn btnPrimary walletNavBtn' : 'btn btnPrimary'}
-          onClick={() => switchChain({ chainId: botchainMainnet.id })}
+          onClick={() => switchChain({ chainId: botchainTestnet.id })}
           disabled={switching}
         >
-          {switching ? 'Switching…' : compact ? 'Switch Network' : 'Switch to BOT Chain'}
+          {switching ? 'Switching…' : compact ? 'Switch Network' : 'Switch to BOT Chain Testnet'}
         </button>
-        {switchError && <p className="error compactMessage">{userErrorMessage(switchError, 'Could not switch networks. Please select BOT Chain in your wallet.')}</p>}
+        {switchError && <p className="error compactMessage">{userErrorMessage(switchError, 'Could not switch networks. Please select BOT Chain Testnet in your wallet.')}</p>}
       </div>
     );
   }
