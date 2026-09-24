@@ -8,7 +8,7 @@ import { useState } from 'react';
 
 const config = createConfig({
   chains: [botchainTestnet],
-  connectors: [injected()],
+  connectors: [injected({ shimDisconnect: true })],
   transports: {
     [botchainTestnet.id]: http(botchainTestnet.rpcUrls.default.http[0]),
   },
