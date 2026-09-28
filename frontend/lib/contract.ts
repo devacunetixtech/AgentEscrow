@@ -1,5 +1,7 @@
 import { AGENT_ESCROW_MAINNET_ADDRESS } from './deployment';
 
+// Mainnet contract configuration. Keep this import aligned with deployment.ts.
+
 export const AGENT_ESCROW_ADDRESS =
   ((process.env.NEXT_PUBLIC_AGENT_ESCROW_ADDRESS || AGENT_ESCROW_MAINNET_ADDRESS) as `0x${string}`);
 
