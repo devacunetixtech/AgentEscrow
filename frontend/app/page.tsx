@@ -28,11 +28,11 @@ export default function Home() {
           </p>
           <div className="heroCtas">
             <a className="btn btnPrimary" href="#how-it-works">See how it works</a>
-            <a className="btn btnSecondary" href="https://scan.bohr.life/address/0xD35764FdC941abEBa8376a5c796554751C00a1bf" target="_blank" rel="noreferrer">View Contract</a>
+            <a className="btn btnSecondary" href="https://scan.botchain.ai/address/0xb48E161Fd1BC78b537C174F1D9B1b4cc87c271C9" target="_blank" rel="noreferrer">View Contract</a>
           </div>
           <div className="proofRow">
             <span><strong>BOT</strong> native payments</span>
-            <span><strong>968</strong> testnet chain ID</span>
+            <span><strong>677</strong> mainnet chain ID</span>
             <span><strong>Verified</strong> contract</span>
           </div>
         </div>
@@ -127,13 +127,13 @@ export default function Home() {
       <section className="chainPanel">
         <div>
           <span className="eyebrow">BOT Chain</span>
-          <h2>Live on BOT Chain Testnet.</h2>
+          <h2>Live on BOT Chain Mainnet.</h2>
           <p>AgentEscrow uses native BOT for escrow payments. The deployed contract is verified and the full lifecycle has been tested on-chain.</p>
         </div>
         <div className="chainDetails">
-          <div><span>Network</span><strong>BOT Chain Testnet</strong></div>
-          <div><span>Chain ID</span><strong>968</strong></div>
-          <div><span>Contract</span><strong>0xD357…a1bf</strong></div>
+          <div><span>Network</span><strong>BOT Chain Mainnet</strong></div>
+          <div><span>Chain ID</span><strong>677</strong></div>
+          <div><span>Contract</span><strong>0xb48E…71C9</strong></div>
           <div className="chainLinks">
             <a href="https://botchain.ai" target="_blank" rel="noreferrer">BOT Chain ↗</a>
             <a href="https://scan.botchain.ai" target="_blank" rel="noreferrer">Explorer ↗</a>
