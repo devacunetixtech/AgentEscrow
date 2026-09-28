@@ -1,7 +1,7 @@
-import { AGENT_ESCROW_TESTNET_ADDRESS } from './deployment';
+import { AGENT_ESCROW_MAINNET_ADDRESS } from './deployment';
 
 export const AGENT_ESCROW_ADDRESS =
-  ((process.env.NEXT_PUBLIC_AGENT_ESCROW_ADDRESS || AGENT_ESCROW_TESTNET_ADDRESS) as `0x${string}`);
+  ((process.env.NEXT_PUBLIC_AGENT_ESCROW_ADDRESS || AGENT_ESCROW_MAINNET_ADDRESS) as `0x${string}`);
 
 export const agentEscrowAbi = [
   {
